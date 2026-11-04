@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">HebrewBooks</string>
+    <string name="search_hint">Search books, authors...</string>
+    <string name="download">Download</string>
+    <string name="downloading">Downloading...</string>
+    <string name="open">Open</string>
+    <string name="cancel">Cancel</string>
+    <string name="book_details">Book Details</string>
+    <string name="pages">Pages: %d</string>
+    <string name="published_in">Published in %s</string>
+    <string name="by_author">by %s</string>
+    <string name="no_results">No results found</string>
+    <string name="try_again">Try again</string>
+    <string name="home">Home</string>
+    <string name="search">Search</string>
+    <string name="downloads">Downloads</string>
+    <string name="settings">Settings</string>
+    <string name="storage_permission_required">Storage permission is required to download books</string>
+    <string name="grant">Grant</string>
+    <string name="download_complete">Download complete!</string>
+    <string name="download_failed">Download failed</string>
+    <string name="no_internet">No internet connection</string>
+</resources>
