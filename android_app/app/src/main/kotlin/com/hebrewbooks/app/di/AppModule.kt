@@ -12,10 +12,13 @@ import org.koin.dsl.module
 val appModule = module {
     single { androidContext() }
     
+    // Services
     single { ApiService() }
     single { DownloadService(androidContext()) }
     
+    // Repository
     single { BookRepository(get(), get()) }
     
+    // ViewModels
     viewModel { BookViewModel(get()) }
 }

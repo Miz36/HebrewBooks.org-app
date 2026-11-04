@@ -17,14 +17,16 @@ class DownloadService(private val context: Context) {
     private val _downloads = MutableStateFlow<List<DownloadInfo>>(emptyList())
     val downloads: StateFlow<List<DownloadInfo>> = _downloads.asStateFlow()
 
-    private var downloadIdMap = mutableMapOf<Long, Int>()
+    private var downloadIdMap = mutableMapOf<Long, Int>() // downloadId -> bookId
 
     init {
+        // Load existing downloads
         loadExistingDownloads()
     }
 
     fun downloadBook(book: Book): Long? {
         return try {
+            // Check if already downloading
             if (_downloads.value.any { it.bookId == book.id && it.status == DownloadStatus.DOWNLOADING }) {
                 return null
             }
@@ -43,6 +45,7 @@ class DownloadService(private val context: Context) {
             val downloadId = downloadManager.enqueue(request)
             downloadIdMap[downloadId] = book.id
 
+            // Add to active downloads
             val newDownload = DownloadInfo(
                 bookId = book.id,
                 bookTitle = book.title,
@@ -60,6 +63,7 @@ class DownloadService(private val context: Context) {
     }
 
     fun cancelDownload(bookId: Int): Boolean {
+        val downloadInfo = _downloads.value.find { it.bookId == bookId && it.status == DownloadStatus.DOWNLOADING }
         val downloadId = downloadIdMap.entries.find { it.value == bookId }?.key
         
         if (downloadId != null) {
@@ -132,6 +136,7 @@ class DownloadService(private val context: Context) {
                         status = downloadStatus
                     )
                     
+                    // Don't add if already exists
                     if (_downloads.value.none { it.bookId == bookId }) {
                         _downloads.value = _downloads.value + downloadInfo
                     }

@@ -32,6 +32,7 @@ class BookRepository(
     private val _searchQuery = MutableStateFlow("")
     val searchQuery: StateFlow<String> = _searchQuery.asStateFlow()
 
+    // Combined state for UI
     val uiState: Flow<BookUiState> = combine(
         _searchResults,
         _featuredBooks,

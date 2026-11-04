@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -12,13 +13,15 @@ import com.hebrewbooks.app.ui.screens.DownloadsScreen
 import com.hebrewbooks.app.ui.screens.HomeScreen
 import com.hebrewbooks.app.ui.screens.PdfViewerScreen
 import com.hebrewbooks.app.ui.screens.SearchScreen
+import com.hebrewbooks.app.ui.theme.HebrewBooksBackground
 
 @Composable
 fun HebrewBooksApp() {
     val navController = rememberNavController()
     
     Surface(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize(),
+        color = HebrewBooksBackground
     ) {
         NavHost(
             navController = navController,
@@ -47,7 +50,10 @@ fun HebrewBooksApp() {
                 val bookId = backStackEntry.arguments?.getString("bookId")?.toIntOrNull() ?: 0
                 BookDetailScreen(
                     bookId = bookId,
-                    onBackClick = { navController.popBackStack() }
+                    onBackClick = { navController.popBackStack() },
+                    onDownloadClick = { book, file ->
+                        navController.navigate("pdfViewer/${book.id}")
+                    }
                 )
             }
             

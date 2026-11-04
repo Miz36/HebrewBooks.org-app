@@ -10,12 +10,12 @@ A **100% native Android app** for HebrewBooks.org that allows you to:
 
 ## Features
 
-- **No WebView** - Truly native app, not a browser wrapper
-- **Direct PDF Downloads** - Downloads PDFs directly without needing a browser
-- **Smooth Search** - Fast, responsive search with debouncing
-- **Modern UI** - Clean Material 3 design with Jetpack Compose
-- **Offline Reading** - Download books and read them offline
-- **Android 7.1+ Support** - Works on AOSP 7.1 (API 25) and above
+✅ **No WebView** - Truly native app, not a browser wrapper
+✅ **Direct PDF Downloads** - Downloads PDFs directly without needing a browser
+✅ **Smooth Search** - Fast, responsive search with debouncing
+✅ **Modern UI** - Clean Material 3 design with Jetpack Compose
+✅ **Offline Reading** - Download books and read them offline
+✅ **Android 7.1+ Support** - Works on AOSP 7.1 (API 25) and above
 
 ## Screens
 
@@ -54,7 +54,7 @@ A **100% native Android app** for HebrewBooks.org that allows you to:
 Or via command line:
 
 ```bash
-cd android_app
+cd hebrewbooks_app/android_app
 ./gradlew assembleDebug
 ```
 
@@ -72,36 +72,66 @@ cd android_app
 
 ```
 android_app/
-  app/
-    src/main/kotlin/com/hebrewbooks/app/
-      models/          # Book, DownloadInfo
-      service/         # ApiService, DownloadService
-      repository/      # BookRepository
-      viewmodel/       # BookViewModel
-      di/              # Koin DI
-      ui/              # Compose UI
-        screens/     # All app screens
-        theme/       # Theme & colors
-      MainActivity.kt
-    src/main/res/        # Resources
-  build.gradle
+├── app/
+│   ├── src/
+│   │   ├── main/
+│   │   │   ├── kotlin/com/hebrewbooks/app/
+│   │   │   │   ├── models/          # Data models
+│   │   │   │   ├── service/         # Network & download services
+│   │   │   │   ├── repository/      # Data repository
+│   │   │   │   ├── viewmodel/       # ViewModels
+│   │   │   │   ├── di/              # Dependency injection
+│   │   │   │   ├── ui/              # Compose UI
+│   │   │   │   │   ├── screens/     # App screens
+│   │   │   │   │   └── theme/       # Theme & styling
+│   │   │   │   └── MainActivity.kt
+│   │   │   └── res/                # Resources
+│   │   └── AndroidManifest.xml
+│   └── build.gradle
+├── build.gradle
+├── settings.gradle
+└── gradle.properties
 ```
 
 ## How It Works
 
-- Scrapes HebrewBooks.org for book data
-- PDF URLs: `https://hebrewbooks.org/pdf/{ID}.pdf`
-- Downloads via Android's DownloadManager
-- PDF viewing via WebView (display only)
+### Book Data
+
+The app scrapes HebrewBooks.org to get book information:
+- Book IDs are numeric (1-999999)
+- PDF URLs follow the pattern: `https://hebrewbooks.org/pdf/{ID}.pdf`
+- Thumbnail URLs: `https://hebrewbooks.org/thumbs/{ID}.png`
+- Book info pages: `https://hebrewbooks.org/{ID}`
+
+### Search
+
+Search queries are sent to HebrewBooks.org's search endpoint, and results are parsed using Jsoup.
+
+### Downloads
+
+PDFs are downloaded using Android's DownloadManager and stored in the Downloads folder.
+
+### PDF Viewing
+
+PDFs are displayed using AndroidX WebView with Google Docs Viewer for online PDFs, or local file URLs for downloaded PDFs.
 
 ## Customization
 
-- Colors: Edit `app/src/main/kotlin/com/hebrewbooks/app/ui/theme/Color.kt`
-- Typography: Edit `app/src/main/kotlin/com/hebrewbooks/app/ui/theme/Type.kt`
-- API URLs: Edit `app/src/main/kotlin/com/hebrewbooks/app/service/ApiService.kt`
+### Colors
+
+Edit `app/src/main/kotlin/com/hebrewbooks/app/ui/theme/Color.kt`
+
+### Typography
+
+Edit `app/src/main/kotlin/com/hebrewbooks/app/ui/theme/Type.kt`
+
+### API URLs
+
+Edit `app/src/main/kotlin/com/hebrewbooks/app/service/ApiService.kt`
 
 ## Permissions
 
+The app requires:
 - **INTERNET** - For downloading books and data
 - **WRITE_EXTERNAL_STORAGE** - For saving PDFs (Android 7-10)
 - **READ_EXTERNAL_STORAGE** - For accessing saved PDFs (Android 7-10)
@@ -115,14 +145,14 @@ android_app/
 
 ## Future Improvements
 
-- Add bookmarks/favorites
-- Add reading progress tracking
-- Add night mode
-- Add text-to-speech
-- Add Hebrew keyboard support
-- Add offline search
-- Add book categories
-- Add recent books
+- [ ] Add bookmarks/favorites
+- [ ] Add reading progress tracking
+- [ ] Add night mode
+- [ ] Add text-to-speech
+- [ ] Add Hebrew keyboard support
+- [ ] Add offline search
+- [ ] Add book categories
+- [ ] Add recent books
 
 ## License
 

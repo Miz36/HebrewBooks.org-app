@@ -40,6 +40,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -113,6 +116,7 @@ fun SearchScreen(
         ) {
             Spacer(modifier = Modifier.height(16.dp))
             
+            // Search field
             OutlinedTextField(
                 value = searchQuery,
                 onValueChange = { viewModel.onSearchQueryChanged(it) },
@@ -213,6 +217,7 @@ fun SearchScreen(
                     Text("No results found for \"${searchQuery}\"")
                 }
             } else {
+                // Search results
                 LazyColumn(
                     contentPadding = PaddingValues(vertical = 8.dp),
                     verticalArrangement = Arrangement.spacedBy(12.dp),
@@ -249,6 +254,7 @@ fun SearchResultItem(
                 .padding(12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
+            // Book cover
             Box(
                 modifier = Modifier
                     .size(70.dp)
@@ -284,6 +290,7 @@ fun SearchResultItem(
             
             Spacer(modifier = Modifier.size(12.dp))
             
+            // Book info
             Column(
                 modifier = Modifier.weight(1f)
             ) {
@@ -323,6 +330,23 @@ fun SearchResultItem(
 @Preview(showBackground = true)
 @Composable
 fun SearchScreenPreview() {
+    val sampleBooks = listOf(
+        Book(
+            id = 1,
+            title = "Sefer Torah",
+            author = "Moses",
+            pages = 300,
+            thumbnailUrl = "https://hebrewbooks.org/thumbs/1.png"
+        ),
+        Book(
+            id = 2,
+            title = "Talmud Bavli",
+            author = "Rabbis",
+            pages = 500,
+            thumbnailUrl = "https://hebrewbooks.org/thumbs/2.png"
+        )
+    )
+    
     SearchScreen(
         onBackClick = {},
         onBookClick = {}

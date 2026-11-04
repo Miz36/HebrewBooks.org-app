@@ -12,6 +12,10 @@ class ApiService {
         .readTimeout(30, TimeUnit.SECONDS)
         .build()
 
+    /**
+     * Search for books by query
+     * HebrewBooks doesn't have a public API, so we scrape the search results
+     */
     suspend fun searchBooks(query: String, page: Int = 1): List<Book> {
         return try {
             val searchUrl = "https://hebrewbooks.org/search.aspx?k=$query&p=$page"
@@ -34,6 +38,9 @@ class ApiService {
         }
     }
 
+    /**
+     * Get book details by ID
+     */
     suspend fun getBookDetails(bookId: Int): Book? {
         return try {
             val bookUrl = "https://hebrewbooks.org/$bookId"
@@ -56,6 +63,9 @@ class ApiService {
         }
     }
 
+    /**
+     * Get trending or featured books
+     */
     suspend fun getFeaturedBooks(): List<Book> {
         return try {
             val request = Request.Builder()
@@ -81,6 +91,7 @@ class ApiService {
         val books = mutableListOf<Book>()
         val doc = Jsoup.parse(html)
         
+        // Find book result items - this selector may need adjustment
         val items = doc.select("div.book-item, a.book-link, table.tbllist tr")
         
         for (item in items) {
@@ -104,7 +115,7 @@ class ApiService {
             }
         }
         
-        return books.take(50)
+        return books.take(50) // Limit results
     }
 
     private fun parseBookDetails(html: String, bookId: Int): Book {
@@ -137,6 +148,7 @@ class ApiService {
         val books = mutableListOf<Book>()
         val doc = Jsoup.parse(html)
         
+        // Try to find featured/new books on homepage
         val items = doc.select("a[href~=/\\d+$], img[src~=/thumbs/\\d+\\.png]")
         
         for (item in items) {

@@ -33,6 +33,7 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
     private val _downloadProgress = MutableStateFlow<Map<Int, Int>>(emptyMap())
     val downloadProgress: StateFlow<Map<Int, Int>> = _downloadProgress.asStateFlow()
 
+    // Main UI state
     val uiState: StateFlow<BookUiState> = repository.uiState
         .combine(_isSearching) { state, searching ->
             state.copy(isLoading = state.isLoading || searching)
@@ -52,9 +53,10 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
     fun onSearchQueryChanged(query: String) {
         _searchQuery.value = query
         
+        // Debounce search
         viewModelScope.launch {
             _isSearching.value = true
-            delay(300)
+            delay(300) // 300ms debounce
             if (_searchQuery.value == query) {
                 repository.searchBooks(query)
             }
