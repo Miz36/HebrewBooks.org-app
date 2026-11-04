@@ -1,0 +1,57 @@
+# Android
+*.iml
+.idea/
+gradle/
+build/
+local.properties
+*.dex
+*.apk
+*.aab
+
+# Android Studio
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Gradle
+.gradle/
+build/
+
+# Kotlin
+*.kotlin_module
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Environment
+.env
+.env.local
+
+# Logs
+*.log
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux
+*~
+.nfs*
+
+# IDE
+.idea/
+*.swp
+*.swo
+*~
+
+# Downloads
+android_app/app/build/
