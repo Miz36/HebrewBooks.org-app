@@ -1,6 +1,7 @@
 # Android
 *.iml
 .idea/
+!gradle/wrapper/
 gradle/
 build/
 local.properties
@@ -41,7 +42,7 @@ Thumbs.db
 Thumbs.db
 ehthumbs.db
 Desktop.ini
-$RECYCLE.BIN/
+.BIN/
 
 # Linux
 *~
