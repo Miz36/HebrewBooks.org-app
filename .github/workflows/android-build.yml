@@ -5,6 +5,7 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
+  workflow_dispatch:
 
 jobs:
   build:
@@ -26,6 +27,7 @@ jobs:
         uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.4'
+          validate-wrappers: false
 
       - name: Set up Android SDK
         uses: android-actions/setup-android@v3
@@ -34,7 +36,7 @@ jobs:
           packages: 'platform-tools platforms;android-34 build-tools;34.0.0'
 
       - name: Build with Gradle
-        run: .gradlew assembleDebug
+        run: gradle assembleDebug
         working-directory: android_app
 
       - name: Upload APK artifact
