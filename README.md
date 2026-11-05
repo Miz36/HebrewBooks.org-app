@@ -115,7 +115,7 @@ PDFs are downloaded using Android's DownloadManager and stored in the Downloads 
 
 PDFs are displayed using AndroidX WebView with Google Docs Viewer for online PDFs, or local file URLs for downloaded PDFs.
 
-## Customization
+##  Customization
 
 ### Colors
 
