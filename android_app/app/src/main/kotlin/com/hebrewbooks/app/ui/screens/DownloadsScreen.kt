@@ -205,7 +205,8 @@ fun DownloadItem(
                     SubcomposeAsyncImage(
                         model = ImageRequest.Builder(LocalContext.current)
                             .data(book.thumbnailUrl)
-                            .crossfade(true)
+                            .size(192, 288)
+                            .crossfade(false)
                             .build(),
                         contentDescription = book.title,
                         contentScale = ContentScale.Fit,

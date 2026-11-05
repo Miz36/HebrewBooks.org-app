@@ -247,7 +247,8 @@ fun BookCard(
                     SubcomposeAsyncImage(
                         model = ImageRequest.Builder(LocalContext.current)
                             .data(book.thumbnailUrl)
-                            .crossfade(true)
+                            .size(480, 720)
+                            .crossfade(false)
                             .build(),
                         contentDescription = book.title,
                         contentScale = ContentScale.Fit,

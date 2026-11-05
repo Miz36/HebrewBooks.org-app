@@ -266,7 +266,8 @@ fun SearchResultItem(
                     SubcomposeAsyncImage(
                         model = ImageRequest.Builder(LocalContext.current)
                             .data(book.thumbnailUrl)
-                            .crossfade(true)
+                            .size(240, 360)
+                            .crossfade(false)
                             .build(),
                         contentDescription = book.title,
                         contentScale = ContentScale.Fit,

@@ -167,7 +167,8 @@ fun BookDetailScreen(
                             SubcomposeAsyncImage(
                                 model = ImageRequest.Builder(LocalContext.current)
                                     .data(book?.thumbnailUrl)
-                                    .crossfade(true)
+                                    .size(768, 1100)
+                                    .crossfade(false)
                                     .build(),
                                 contentDescription = book?.title,
                                 contentScale = ContentScale.Fit,
