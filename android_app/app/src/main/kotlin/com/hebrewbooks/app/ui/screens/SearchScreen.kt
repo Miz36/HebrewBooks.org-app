@@ -33,6 +33,9 @@ import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SegmentedButton
+import androidx.compose.material3.SegmentedButtonDefaults
+import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -58,6 +61,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
 import com.hebrewbooks.app.models.Book
+import com.hebrewbooks.app.models.BookSearchField
 import com.hebrewbooks.app.ui.theme.HebrewBooksPrimary
 import com.hebrewbooks.app.ui.theme.HebrewBooksSurface
 import com.hebrewbooks.app.viewmodel.BookViewModel
@@ -72,6 +76,7 @@ fun SearchScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val searchQuery by viewModel.searchQuery.collectAsState()
+    val searchField by viewModel.searchField.collectAsState()
     val isSearching by viewModel.isSearching.collectAsState()
     val focusManager = LocalFocusManager.current
     
@@ -115,6 +120,23 @@ fun SearchScreen(
                 .padding(horizontal = 16.dp)
         ) {
             Spacer(modifier = Modifier.height(16.dp))
+
+            SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
+                BookSearchField.values().forEachIndexed { index, field ->
+                    SegmentedButton(
+                        selected = searchField == field,
+                        onClick = { viewModel.onSearchFieldChanged(field) },
+                        shape = SegmentedButtonDefaults.itemShape(
+                            index = index,
+                            count = BookSearchField.values().size
+                        )
+                    ) {
+                        Text(field.label)
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
             
             // Search field
             OutlinedTextField(
@@ -150,7 +172,7 @@ fun SearchScreen(
                 keyboardActions = KeyboardActions(
                     onSearch = {
                         focusManager.clearFocus()
-                        viewModel.searchBooks(searchQuery)
+                        viewModel.searchBooks(searchQuery, searchField)
                     }
                 )
             )

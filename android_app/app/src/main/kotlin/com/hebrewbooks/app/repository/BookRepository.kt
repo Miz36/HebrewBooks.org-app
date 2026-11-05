@@ -1,6 +1,7 @@
 package com.hebrewbooks.app.repository
 
 import com.hebrewbooks.app.models.Book
+import com.hebrewbooks.app.models.BookSearchField
 import com.hebrewbooks.app.models.DownloadInfo
 import com.hebrewbooks.app.models.DownloadStatus
 import com.hebrewbooks.app.service.ApiService
@@ -50,7 +51,7 @@ class BookRepository(
         state.copy(downloads = currentDownloads)
     }
 
-    suspend fun searchBooks(query: String) = withContext(Dispatchers.IO) {
+    suspend fun searchBooks(query: String, field: BookSearchField = BookSearchField.ANY_FIELD) = withContext(Dispatchers.IO) {
         _searchQuery.value = query
         if (query.isBlank()) {
             _searchResults.value = emptyList()
@@ -62,7 +63,11 @@ class BookRepository(
 
         try {
             val results = apiService.searchBooks(query)
-            _searchResults.value = results
+            _searchResults.value = when (field) {
+                BookSearchField.ANY_FIELD -> results
+                BookSearchField.NAME -> results.filter { it.title.contains(query, ignoreCase = true) }
+                BookSearchField.AUTHOR -> results.filter { it.author.contains(query, ignoreCase = true) }
+            }
         } catch (e: Exception) {
             _error.value = e.message ?: "Search failed"
             _searchResults.value = emptyList()

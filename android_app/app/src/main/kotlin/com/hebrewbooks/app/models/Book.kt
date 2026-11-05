@@ -44,3 +44,9 @@ enum class DownloadStatus {
     FAILED,
     CANCELLED
 }
+
+enum class BookSearchField(val label: String) {
+    ANY_FIELD("Any field"),
+    NAME("Name"),
+    AUTHOR("Author")
+}

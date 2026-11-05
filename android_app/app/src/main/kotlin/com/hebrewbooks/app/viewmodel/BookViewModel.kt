@@ -3,6 +3,7 @@ package com.hebrewbooks.app.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hebrewbooks.app.models.Book
+import com.hebrewbooks.app.models.BookSearchField
 import com.hebrewbooks.app.models.DownloadInfo
 import com.hebrewbooks.app.models.DownloadStatus
 import com.hebrewbooks.app.repository.BookRepository
@@ -22,6 +23,9 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
     
     private val _searchQuery = MutableStateFlow("")
     val searchQuery: StateFlow<String> = _searchQuery.asStateFlow()
+
+    private val _searchField = MutableStateFlow(BookSearchField.ANY_FIELD)
+    val searchField: StateFlow<BookSearchField> = _searchField.asStateFlow()
 
     private val _selectedBook = MutableStateFlow<Book?>(null)
     val selectedBook: StateFlow<Book?> = _selectedBook.asStateFlow()
@@ -55,21 +59,29 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
 
     fun onSearchQueryChanged(query: String) {
         _searchQuery.value = query
+        val field = _searchField.value
         
         // Debounce search
         viewModelScope.launch {
             _isSearching.value = true
             delay(300) // 300ms debounce
-            if (_searchQuery.value == query) {
-                repository.searchBooks(query)
+            if (_searchQuery.value == query && _searchField.value == field) {
+                repository.searchBooks(query, field)
             }
             _isSearching.value = false
         }
     }
 
-    fun searchBooks(query: String) {
+    fun onSearchFieldChanged(field: BookSearchField) {
+        if (_searchField.value != field) {
+            _searchField.value = field
+            onSearchQueryChanged(_searchQuery.value)
+        }
+    }
+
+    fun searchBooks(query: String, field: BookSearchField = _searchField.value) {
         viewModelScope.launch {
-            repository.searchBooks(query)
+            repository.searchBooks(query, field)
         }
     }
 
