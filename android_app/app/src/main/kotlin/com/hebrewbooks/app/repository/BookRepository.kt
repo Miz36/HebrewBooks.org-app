@@ -7,11 +7,16 @@ import com.hebrewbooks.app.models.DownloadStatus
 import com.hebrewbooks.app.service.ApiService
 import com.hebrewbooks.app.service.DownloadService
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.sync.Semaphore
+import kotlinx.coroutines.sync.withPermit
 import kotlinx.coroutines.withContext
 
 class BookRepository(
@@ -90,6 +95,17 @@ class BookRepository(
 
     suspend fun getBookDetails(bookId: Int): Book? = withContext(Dispatchers.IO) {
         return@withContext apiService.getBookDetails(bookId)
+    }
+
+    suspend fun getBooksByIds(bookIds: List<Int>): List<Book> = withContext(Dispatchers.IO) {
+        val requestLimit = Semaphore(4)
+        coroutineScope {
+            bookIds.map { bookId ->
+                async {
+                    requestLimit.withPermit { apiService.getBookDetails(bookId) }
+                }
+            }.awaitAll().filterNotNull()
+        }
     }
 
     fun downloadBook(book: Book): Long? {

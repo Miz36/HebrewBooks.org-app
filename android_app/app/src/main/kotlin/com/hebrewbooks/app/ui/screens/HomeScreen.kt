@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -64,6 +65,8 @@ import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
 import com.hebrewbooks.app.R
 import com.hebrewbooks.app.models.Book
+import com.hebrewbooks.app.models.BookTopic
+import com.hebrewbooks.app.models.BookTopics
 import com.hebrewbooks.app.ui.theme.HebrewBooksPrimary
 import com.hebrewbooks.app.ui.theme.HebrewBooksSurface
 import com.hebrewbooks.app.viewmodel.BookViewModel
@@ -74,6 +77,7 @@ import org.koin.androidx.compose.koinViewModel
 fun HomeScreen(
     onSearchClick: () -> Unit,
     onBookClick: (Book) -> Unit,
+    onTopicClick: (BookTopic) -> Unit,
     onDownloadsClick: () -> Unit,
     viewModel: BookViewModel = koinViewModel()
 ) {
@@ -145,6 +149,26 @@ fun HomeScreen(
             }
             
             Spacer(modifier = Modifier.height(24.dp))
+
+            Text(
+                text = "Browse by topic",
+                style = MaterialTheme.typography.titleMedium.copy(
+                    fontWeight = FontWeight.Bold
+                )
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                items(BookTopics.all) { topic ->
+                    androidx.compose.material3.AssistChip(
+                        onClick = { onTopicClick(topic) },
+                        label = { Text(topic.name) }
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(20.dp))
             
             // Featured books section
             Text(
@@ -350,6 +374,7 @@ fun HomeScreenPreview() {
     HomeScreen(
         onSearchClick = {},
         onBookClick = {},
+        onTopicClick = {},
         onDownloadsClick = {}
     )
 }

@@ -13,6 +13,8 @@ import com.hebrewbooks.app.ui.screens.DownloadsScreen
 import com.hebrewbooks.app.ui.screens.HomeScreen
 import com.hebrewbooks.app.ui.screens.PdfViewerScreen
 import com.hebrewbooks.app.ui.screens.SearchScreen
+import com.hebrewbooks.app.ui.screens.TopicBrowseScreen
+import com.hebrewbooks.app.models.BookTopics
 import com.hebrewbooks.app.ui.theme.HebrewBooksBackground
 
 @Composable
@@ -33,8 +35,25 @@ fun HebrewBooksApp() {
                     onBookClick = { book ->
                         navController.navigate("bookDetail/${book.id}")
                     },
+                    onTopicClick = { topic ->
+                        navController.navigate("topic/${topic.key}")
+                    },
                     onDownloadsClick = { navController.navigate("downloads") }
                 )
+            }
+
+            composable("topic/{topicKey}") { backStackEntry ->
+                val topicKey = backStackEntry.arguments?.getString("topicKey")
+                val topic = topicKey?.let(BookTopics::find)
+                if (topic != null) {
+                    TopicBrowseScreen(
+                        topic = topic,
+                        onBackClick = { navController.popBackStack() },
+                        onBookClick = { book ->
+                            navController.navigate("bookDetail/${book.id}")
+                        }
+                    )
+                }
             }
             
             composable("search") {

@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hebrewbooks.app.models.Book
 import com.hebrewbooks.app.models.BookSearchField
+import com.hebrewbooks.app.models.BookTopic
 import com.hebrewbooks.app.models.DownloadInfo
 import com.hebrewbooks.app.models.DownloadStatus
 import com.hebrewbooks.app.repository.BookRepository
@@ -38,6 +39,12 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
 
     private val _downloadProgress = MutableStateFlow<Map<Int, Int>>(emptyMap())
     val downloadProgress: StateFlow<Map<Int, Int>> = _downloadProgress.asStateFlow()
+
+    private val _topicBooks = MutableStateFlow<List<Book>>(emptyList())
+    val topicBooks: StateFlow<List<Book>> = _topicBooks.asStateFlow()
+
+    private val _isLoadingTopic = MutableStateFlow(false)
+    val isLoadingTopic: StateFlow<Boolean> = _isLoadingTopic.asStateFlow()
 
     // Main UI state
     val uiState: StateFlow<BookUiState> = repository.uiState
@@ -126,6 +133,18 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
     suspend fun getBookDetails(bookId: Int): Book? = repository.getBookDetails(bookId)
 
     fun getDownloadedFile(bookId: Int) = repository.getDownloadedFile(bookId)
+
+    fun loadTopic(topic: BookTopic) {
+        viewModelScope.launch {
+            _isLoadingTopic.value = true
+            _topicBooks.value = emptyList()
+            try {
+                _topicBooks.value = repository.getBooksByIds(topic.bookIds)
+            } finally {
+                _isLoadingTopic.value = false
+            }
+        }
+    }
 
     fun getDownloadProgress(bookId: Int): Int {
         return _downloadProgress.value[bookId] ?: 0
