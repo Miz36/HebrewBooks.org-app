@@ -20,7 +20,9 @@ class HebrewBooksApp : Application(), ImageLoaderFactory {
 
         return ImageLoader.Builder(this)
             .memoryCache {
-                MemoryCache.Builder().maxSizeBytes(memoryCacheSize.toInt()).build()
+                MemoryCache.Builder(this@HebrewBooksApp)
+                    .maxSizeBytes(memoryCacheSize.toInt())
+                    .build()
             }
             .crossfade(false)
             .build()
