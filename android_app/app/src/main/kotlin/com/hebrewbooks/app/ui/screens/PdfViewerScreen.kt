@@ -1,9 +1,13 @@
 package com.hebrewbooks.app.ui.screens
 
+import android.app.ActivityManager
+import android.content.Context
+import android.content.Intent
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.net.Uri
-import android.os.Environment
+import android.widget.Toast
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -56,6 +60,9 @@ fun PdfViewerScreen(
     viewModel: BookViewModel = koinViewModel()
 ) {
     val context = LocalContext.current
+    val isLowRamDevice = remember(context) {
+        (context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).isLowRamDevice
+    }
     val bookState by viewModel.selectedBook.collectAsState()
     var book by remember { mutableStateOf<com.hebrewbooks.app.models.Book?>(null) }
     var isLoading by remember { mutableStateOf(true) }
@@ -132,36 +139,63 @@ fun PdfViewerScreen(
                         .fillMaxSize()
                         .padding(horizontal = 8.dp, vertical = 8.dp)
                 ) {
-                    AndroidView(
-                        factory = { ctx ->
-                            WebView(ctx).apply {
-                                settings.javaScriptEnabled = true
-                                settings.setSupportZoom(true)
-                                settings.builtInZoomControls = true
-                                settings.displayZoomControls = false
-                                
-                                webViewClient = object : WebViewClient() {
-                                    override fun onPageFinished(view: WebView?, url: String?) {
-                                        super.onPageFinished(view, url)
-                                        isLoading = false
+                    if (isLowRamDevice) {
+                        Column(
+                            modifier = Modifier.fillMaxSize(),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center
+                        ) {
+                            Text("Open this PDF in another app to save memory.")
+                            Spacer(modifier = Modifier.height(12.dp))
+                            Button(
+                                onClick = {
+                                    val opened = if (isDownloaded) {
+                                        viewModel.openDownloadedFile(bookId)
+                                    } else {
+                                        runCatching {
+                                            context.startActivity(
+                                                Intent(Intent.ACTION_VIEW, Uri.parse(pdfUrl))
+                                            )
+                                        }.isSuccess
+                                    }
+                                    if (!opened) {
+                                        Toast.makeText(context, "No PDF viewer available", Toast.LENGTH_SHORT).show()
                                     }
                                 }
-                                
-                                // Load PDF
-                                if (isDownloaded) {
-                                    val downloadedFile = viewModel.getDownloadedFile(bookId)
-                                    downloadedFile?.let { file ->
-                                        loadUrl("file://${file.absolutePath}")
-                                    }
-                                } else {
-                                    loadUrl("https://docs.google.com/gview?embedded=true&url=$pdfUrl")
-                                }
+                            ) {
+                                Text("Open PDF")
                             }
-                        },
-                        modifier = Modifier.fillMaxSize()
-                    )
-                    
-                    if (isLoading) {
+                        }
+                    } else {
+                        AndroidView(
+                            factory = { ctx ->
+                                WebView(ctx).apply {
+                                    settings.javaScriptEnabled = true
+                                    settings.setSupportZoom(true)
+                                    settings.builtInZoomControls = true
+                                    settings.displayZoomControls = false
+
+                                    webViewClient = object : WebViewClient() {
+                                        override fun onPageFinished(view: WebView?, url: String?) {
+                                            super.onPageFinished(view, url)
+                                            isLoading = false
+                                        }
+                                    }
+
+                                    if (isDownloaded) {
+                                        viewModel.getDownloadedFile(bookId)?.let { file ->
+                                            loadUrl("file://${file.absolutePath}")
+                                        }
+                                    } else {
+                                        loadUrl("https://docs.google.com/gview?embedded=true&url=$pdfUrl")
+                                    }
+                                }
+                            },
+                            modifier = Modifier.fillMaxSize()
+                        )
+                    }
+
+                    if (!isLowRamDevice && isLoading) {
                         LinearProgressIndicator(
                             modifier = Modifier
                                 .fillMaxWidth()
