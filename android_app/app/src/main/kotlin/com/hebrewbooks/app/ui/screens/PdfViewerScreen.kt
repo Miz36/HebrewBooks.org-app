@@ -1,5 +1,7 @@
-package com.hebrewbooks_app.ui.screens
+package com.hebrewbooks.app.ui.screens
 
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import android.net.Uri
 import android.os.Environment
 import androidx.compose.foundation.layout.Box
@@ -9,11 +11,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.OpenInNew
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -39,8 +43,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.webkit.WebView
-import androidx.webkit.WebViewClient
 import com.hebrewbooks.app.ui.theme.HebrewBooksPrimary
 import com.hebrewbooks.app.ui.theme.HebrewBooksSurface
 import com.hebrewbooks.app.viewmodel.BookViewModel

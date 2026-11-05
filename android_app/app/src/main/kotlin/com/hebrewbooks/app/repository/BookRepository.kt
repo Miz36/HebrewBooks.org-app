@@ -31,28 +31,23 @@ class BookRepository(
 
     private val _searchQuery = MutableStateFlow("")
     val searchQuery: StateFlow<String> = _searchQuery.asStateFlow()
+    val downloads: StateFlow<List<DownloadInfo>> = downloadService.downloads
 
     // Combined state for UI
     val uiState: Flow<BookUiState> = combine(
-        _searchResults,
-        _featuredBooks,
-        _isLoading,
-        _error,
-        _searchQuery,
-        downloadService.downloads
-    ) { searchResults, featured, loading, error, query, downloads ->
-        BookUiState(
-            searchResults = searchResults,
-            featuredBooks = featured,
-            isLoading = loading,
-            error = error,
-            searchQuery = query,
-            downloads = downloads
-        )
-    }
-
-    init {
-        loadFeaturedBooks()
+        combine(_searchResults, _featuredBooks, _isLoading, _error, _searchQuery) {
+                searchResults, featured, loading, error, query ->
+            BookUiState(
+                searchResults = searchResults,
+                featuredBooks = featured,
+                isLoading = loading,
+                error = error,
+                searchQuery = query
+            )
+        },
+        downloads
+    ) { state, currentDownloads ->
+        state.copy(downloads = currentDownloads)
     }
 
     suspend fun searchBooks(query: String) = withContext(Dispatchers.IO) {
@@ -107,6 +102,8 @@ class BookRepository(
     fun isDownloaded(bookId: Int): Boolean {
         return downloadService.isDownloaded(bookId)
     }
+
+    fun getDownloadedFile(bookId: Int) = downloadService.getDownloadedFile(bookId)
 
     fun openDownloadedFile(bookId: Int): Boolean {
         return downloadService.openDownloadedFile(bookId)

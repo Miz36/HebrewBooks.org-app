@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items as gridItems
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -59,7 +60,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import coil.compose.AsyncImage
+import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
 import com.hebrewbooks.app.R
 import com.hebrewbooks.app.models.Book
@@ -210,7 +211,7 @@ fun FeaturedBooksGrid(
         verticalArrangement = Arrangement.spacedBy(12.dp),
         modifier = modifier
     ) {
-        items(books) { book ->
+        gridItems(books) { book ->
             BookCard(
                 book = book,
                 onClick = { onBookClick(book) }
@@ -243,7 +244,7 @@ fun BookCard(
                     .background(MaterialTheme.colorScheme.surfaceVariant)
             ) {
                 if (!book.thumbnailUrl.isNullOrBlank()) {
-                    AsyncImage(
+                    SubcomposeAsyncImage(
                         model = ImageRequest.Builder(LocalContext.current)
                             .data(book.thumbnailUrl)
                             .crossfade(true)

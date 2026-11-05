@@ -50,7 +50,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
+import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
 import com.hebrewbooks.app.models.Book
 import com.hebrewbooks.app.models.DownloadInfo
@@ -202,7 +202,7 @@ fun DownloadItem(
                     .background(MaterialTheme.colorScheme.surfaceVariant)
             ) {
                 if (!book.thumbnailUrl.isNullOrBlank()) {
-                    AsyncImage(
+                    SubcomposeAsyncImage(
                         model = ImageRequest.Builder(LocalContext.current)
                             .data(book.thumbnailUrl)
                             .crossfade(true)

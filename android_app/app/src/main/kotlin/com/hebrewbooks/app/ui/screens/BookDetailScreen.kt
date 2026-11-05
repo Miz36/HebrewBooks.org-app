@@ -26,6 +26,7 @@ import androidx.compose.material.icons.outlined.OpenInNew
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -53,7 +54,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
+import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
 import com.hebrewbooks.app.models.Book
 import com.hebrewbooks.app.models.DownloadStatus
@@ -163,7 +164,7 @@ fun BookDetailScreen(
                         contentAlignment = Alignment.Center
                     ) {
                         if (!book?.thumbnailUrl.isNullOrBlank()) {
-                            AsyncImage(
+                            SubcomposeAsyncImage(
                                 model = ImageRequest.Builder(LocalContext.current)
                                     .data(book?.thumbnailUrl)
                                     .crossfade(true)

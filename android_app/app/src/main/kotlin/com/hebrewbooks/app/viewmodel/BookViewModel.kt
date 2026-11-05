@@ -10,10 +10,12 @@ import com.hebrewbooks.app.repository.BookUiState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class BookViewModel(private val repository: BookRepository) : ViewModel() {
@@ -38,9 +40,10 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
         .combine(_isSearching) { state, searching ->
             state.copy(isLoading = state.isLoading || searching)
         }
-        .asStateFlow()
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), BookUiState())
 
     init {
+        loadFeaturedBooks()
         viewModelScope.launch {
             repository.downloads.collectLatest { downloads ->
                 _downloadProgress.value = downloads.associate { 
@@ -107,6 +110,10 @@ class BookViewModel(private val repository: BookRepository) : ViewModel() {
     fun openDownloadedFile(bookId: Int): Boolean {
         return repository.openDownloadedFile(bookId)
     }
+
+    suspend fun getBookDetails(bookId: Int): Book? = repository.getBookDetails(bookId)
+
+    fun getDownloadedFile(bookId: Int) = repository.getDownloadedFile(bookId)
 
     fun getDownloadProgress(bookId: Int): Int {
         return _downloadProgress.value[bookId] ?: 0
