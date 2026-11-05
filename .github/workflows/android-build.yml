@@ -34,7 +34,7 @@ jobs:
           packages: 'platform-tools platforms;android-34 build-tools;34.0.0'
 
       - name: Build with Gradle
-        run: gradle assembleDebug
+        run: .gradlew assembleDebug
         working-directory: android_app
 
       - name: Upload APK artifact
